@@ -1,13 +1,13 @@
 import { useState } from "react";
-import CreateUser from "../../components/modal/CreateUser"
-import Users from "../../components/users/Users"
+import BlogsUser from "../../components/modal/BlogUser"
+import Users from "../../components/blog/Blogs"
 
 const Home = () => {
     const [isOpen, setIsOpen] = useState(null);
     return (
         <>
             <Users setIsOpen={setIsOpen} isOpen={isOpen} />
-            <CreateUser setIsOpen={setIsOpen} isOpen={isOpen} />
+            <BlogsUser setIsOpen={setIsOpen} isOpen={isOpen} />
         </>
     )
 }

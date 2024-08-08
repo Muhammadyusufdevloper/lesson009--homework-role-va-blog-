@@ -1,23 +1,30 @@
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useCreateUserMutation } from '../../context/api/usersApi';
+import { useUpdateBlogMutation } from '../../context/api/blogsApi';
 
-let initialState = {
-    fname: 'Azizbek',
-    lname: 'Tolipov',
-    username: '@azizbek_0407',
-    password: '121223233434',
-    gender: 'male',
-    budget: '2202.332',
-    age: '25'
-}
+const initialState = {
+    title: '',
+    description: '',
+    category: '',
+    author: '',
+    views: '',
+    likes: '',
+};
 
-const CreateUser = ({ setIsOpen, isOpen }) => {
+const EditUser = ({ setEditUser, editUser }) => {
     const [formValues, setFormValues] = useState(initialState);
-    const [createUser, { isSuccess }] = useCreateUserMutation()
+    const [updateUser, { isSuccess }] = useUpdateBlogMutation();
+
+    useEffect(() => {
+        if (editUser) {
+            setFormValues(editUser);
+        }
+    }, [editUser]);
+
     const toggleModal = () => {
-        setIsOpen(!isOpen);
+        setEditUser(null);
     };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormValues({
@@ -25,27 +32,29 @@ const CreateUser = ({ setIsOpen, isOpen }) => {
             [name]: value
         });
     };
+
     useEffect(() => {
         if (isSuccess) {
-            toggleModal()
+            toggleModal();
         }
-    }, [isSuccess])
+    }, [isSuccess]);
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        createUser(formValues)
+        if (editUser) {
+            updateUser({ body: formValues, id: editUser._id });
+        }
     };
-
-
 
     return (
         <>
-            {isOpen && (
+            {editUser && (
                 <div
                     className="fixed top-0 right-0 left-0 z-40 w-full h-full bg-[#0000001e]"
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => setEditUser(null)}
                 />
             )}
-            {isOpen && (
+            {editUser && (
                 <div
                     id="static-modal"
                     data-modal-backdrop="static"
@@ -59,7 +68,7 @@ const CreateUser = ({ setIsOpen, isOpen }) => {
                         <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
                             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                                 <h3 id="modal-title" className="text-xl font-semibold text-gray-900 dark:text-white">
-                                    Create User
+                                    Edit Blog
                                 </h3>
                                 <button
                                     type="button"
@@ -88,148 +97,118 @@ const CreateUser = ({ setIsOpen, isOpen }) => {
                                 <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
                                     <div>
                                         <label
-                                            htmlFor="fname"
+                                            htmlFor="title"
                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                         >
-                                            First Name
+                                            Title
                                         </label>
                                         <input
                                             type="text"
-                                            name="fname"
-                                            id="fname"
+                                            name="title"
+                                            id="title"
                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="First Name"
-                                            value={formValues.fname}
+                                            placeholder="Title"
+                                            value={formValues.title}
                                             onChange={handleChange}
                                             required
                                         />
                                     </div>
                                     <div>
                                         <label
-                                            htmlFor="lname"
+                                            htmlFor="description"
                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                         >
-                                            Last Name
+                                            Description
                                         </label>
                                         <input
                                             type="text"
-                                            name="lname"
-                                            id="lname"
+                                            name="description"
+                                            id="description"
                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="Last Name"
-                                            value={formValues.lname}
+                                            placeholder="Description"
+                                            value={formValues.description}
                                             onChange={handleChange}
                                             required
                                         />
                                     </div>
                                     <div>
                                         <label
-                                            htmlFor="username"
+                                            htmlFor="category"
                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                         >
-                                            Username
+                                            Category
                                         </label>
                                         <input
                                             type="text"
-                                            name="username"
-                                            id="username"
+                                            name="category"
+                                            id="category"
                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="Username"
-                                            value={formValues.username}
+                                            placeholder="Category"
+                                            value={formValues.category}
                                             onChange={handleChange}
                                             required
                                         />
                                     </div>
                                     <div>
                                         <label
-                                            htmlFor="password"
+                                            htmlFor="author"
                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                         >
-                                            Password
+                                            Author
                                         </label>
                                         <input
-                                            type="password"
-                                            name="password"
-                                            id="password"
-                                            placeholder="••••••••"
+                                            type="text"
+                                            name="author"
+                                            id="author"
                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            value={formValues.password}
+                                            placeholder="Author"
+                                            value={formValues.author}
                                             onChange={handleChange}
                                             required
                                         />
                                     </div>
                                     <div>
                                         <label
-                                            htmlFor="gender"
+                                            htmlFor="views"
                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                         >
-                                            Gender
-                                        </label>
-                                        <select
-                                            name="gender"
-                                            id="gender"
-                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            value={formValues.gender}
-                                            onChange={handleChange}
-                                            required
-                                        >
-                                            <option value="" disabled>Select Gender</option>
-                                            <option value="male">Male</option>
-                                            <option value="female">Female</option>
-                                            <option value="other">Other</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label
-                                            htmlFor="budget"
-                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                        >
-                                            Budget
+                                            Views
                                         </label>
                                         <input
                                             type="number"
-                                            name="budget"
-                                            id="budget"
+                                            name="views"
+                                            id="views"
                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="Budget"
-                                            value={formValues.budget}
+                                            placeholder="Views"
+                                            value={formValues.views}
                                             onChange={handleChange}
                                             required
                                         />
                                     </div>
                                     <div>
                                         <label
-                                            htmlFor="age"
+                                            htmlFor="likes"
                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                         >
-                                            Age
+                                            Likes
                                         </label>
                                         <input
                                             type="number"
-                                            name="age"
-                                            id="age"
+                                            name="likes"
+                                            id="likes"
                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="Age"
-                                            value={formValues.age}
+                                            placeholder="Likes"
+                                            value={formValues.likes}
                                             onChange={handleChange}
                                             required
                                         />
                                     </div>
-                                    <div className="flex items-center justify-between p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                                        <button
-                                            type="submit"
-                                            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                        >
-                                            Create
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                                            onClick={toggleModal}
-                                        >
-                                            Close
-                                        </button>
-                                    </div>
+                                    <button
+                                        type="submit"
+                                        className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                                    >
+                                        Update Blog
+                                    </button>
                                 </form>
                             </div>
                         </div>
@@ -240,9 +219,9 @@ const CreateUser = ({ setIsOpen, isOpen }) => {
     );
 };
 
-CreateUser.propTypes = {
-    setIsOpen: PropTypes.func.isRequired,
-    isOpen: PropTypes.bool,
+EditUser.propTypes = {
+    setEditUser: PropTypes.func.isRequired,
+    editUser: PropTypes.object
 };
 
-export default CreateUser;
+export default EditUser;

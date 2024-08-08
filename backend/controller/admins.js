@@ -21,7 +21,9 @@ function informationReturn(msg, variant, payload) {
 class AdminsController {
     async getProfile(req, res) {
         try {
-            let admin = await Admins.findById(req.user._id);
+            const id = req.user._id;
+            const admin = await Admins.findById(id);
+
             if (!admin) {
                 return res.status(404).json(informationReturn("Admin profile not found", "error", null));
             }
@@ -67,6 +69,60 @@ class AdminsController {
                 });
             } else {
                 return res.status(400).json(informationReturn("Username or password incorrect", "error", null));
+            }
+        } catch (err) {
+            res.status(500).json(requiredCatch());
+        }
+    }
+
+    async updateProfile(req, res) {
+        try {
+            const id = req.user._id;
+            const { username } = req.body;
+
+            const user = await Admins.findById(id);
+            if (!user) {
+                return res.status(400).json(informationReturn("User not found", "error", null));
+            }
+
+            const checkUsername = await Admins.findOne({ username });
+            if (checkUsername && checkUsername._id.toString() !== id) {
+                return res.status(400).json(informationReturn("Username already exists", "warning", null));
+            }
+
+            const updatedUser = await Admins.findByIdAndUpdate(
+                id,
+                { ...req.body, password: user.password },
+                { new: true }
+            );
+
+            res.status(200).json(informationReturn("Profile updated successfully", "success", updatedUser));
+        } catch (err) {
+            res.status(500).json(requiredCatch());
+        }
+    }
+
+    async resetPassword(req, res) {
+        try {
+            const id = req.user._id;
+            const user = await Admins.findById(id);
+            if (!user) {
+                return res.status(400).json(informationReturn("User not found", "error", null));
+            }
+
+            const { password, newPassword } = req.body;
+            const isMatch = await bcrypt.compare(password, user.password);
+            if (isMatch) {
+                const hashPassword = await bcrypt.hash(newPassword, 10);
+                const updatedUser = await Admins.findByIdAndUpdate(
+                    id,
+                    { password: hashPassword },
+                    { new: true }
+                );
+
+                res.status(200).json(informationReturn("Password updated successfully", "success", updatedUser));
+            } else {
+                res.status(400).json(informationReturn("Invalid password", "error", null));
             }
         } catch (err) {
             res.status(500).json(requiredCatch());

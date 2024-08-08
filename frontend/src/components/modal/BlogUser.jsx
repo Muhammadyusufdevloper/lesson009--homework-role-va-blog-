@@ -1,31 +1,22 @@
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useUpdateUserMutation } from '../../context/api/usersApi';
+import { useCreateBlogMutation } from '../../context/api/blogsApi';
 
-const initialState = {
-    fname: '',
-    lname: '',
-    username: '',
-    password: '',
-    gender: '',
-    budget: '',
-    age: ''
-};
+let initialState = {
+    title: '',
+    description: '',
+    category: '',
+    author: '',
+    views: '',
+    likes: '',
+}
 
-const EditUser = ({ setEditUser, editUser }) => {
+const BlogsUser = ({ setIsOpen, isOpen }) => {
     const [formValues, setFormValues] = useState(initialState);
-    const [updateUser, { isSuccess }] = useUpdateUserMutation();
-
-    useEffect(() => {
-        if (editUser) {
-            setFormValues(editUser);
-        }
-    }, [editUser]);
-
+    const [createUser, { isSuccess }] = useCreateBlogMutation()
     const toggleModal = () => {
-        setEditUser(null);
+        setIsOpen(!isOpen);
     };
-
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormValues({
@@ -33,27 +24,27 @@ const EditUser = ({ setEditUser, editUser }) => {
             [name]: value
         });
     };
-
     useEffect(() => {
         if (isSuccess) {
-            toggleModal();
+            toggleModal()
         }
-    }, [isSuccess]);
-
+    }, [isSuccess])
     const handleSubmit = (e) => {
         e.preventDefault();
-        updateUser({ body: formValues, id: editUser._id });
+        createUser(formValues)
     };
+
+
 
     return (
         <>
-            {editUser && (
+            {isOpen && (
                 <div
                     className="fixed top-0 right-0 left-0 z-40 w-full h-full bg-[#0000001e]"
-                    onClick={() => setEditUser(null)}
+                    onClick={() => setIsOpen(false)}
                 />
             )}
-            {editUser && (
+            {isOpen && (
                 <div
                     id="static-modal"
                     data-modal-backdrop="static"
@@ -67,7 +58,7 @@ const EditUser = ({ setEditUser, editUser }) => {
                         <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
                             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                                 <h3 id="modal-title" className="text-xl font-semibold text-gray-900 dark:text-white">
-                                    Edit User
+                                    Create User
                                 </h3>
                                 <button
                                     type="button"
@@ -99,15 +90,15 @@ const EditUser = ({ setEditUser, editUser }) => {
                                             htmlFor="fname"
                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                         >
-                                            First Name
+                                            Title
                                         </label>
                                         <input
                                             type="text"
                                             name="fname"
                                             id="fname"
                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="First Name"
-                                            value={formValues.fname}
+                                            placeholder="Title"
+                                            value={formValues.title}
                                             onChange={handleChange}
                                             required
                                         />
@@ -117,15 +108,15 @@ const EditUser = ({ setEditUser, editUser }) => {
                                             htmlFor="lname"
                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                         >
-                                            Last Name
+                                            Description
                                         </label>
                                         <input
                                             type="text"
                                             name="lname"
                                             id="lname"
                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="Last Name"
-                                            value={formValues.lname}
+                                            placeholder="Description"
+                                            value={formValues.description}
                                             onChange={handleChange}
                                             required
                                         />
@@ -135,7 +126,7 @@ const EditUser = ({ setEditUser, editUser }) => {
                                             htmlFor="username"
                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                         >
-                                            Username
+                                            Category
                                         </label>
                                         <input
                                             type="text"
@@ -143,7 +134,7 @@ const EditUser = ({ setEditUser, editUser }) => {
                                             id="username"
                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                             placeholder="Username"
-                                            value={formValues.username}
+                                            value={formValues.category}
                                             onChange={handleChange}
                                             required
                                         />
@@ -153,15 +144,15 @@ const EditUser = ({ setEditUser, editUser }) => {
                                             htmlFor="password"
                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                         >
-                                            Password
+                                            Author
                                         </label>
                                         <input
                                             type="password"
                                             name="password"
                                             id="password"
                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="Password"
-                                            value={formValues.password}
+                                            placeholder="Author"
+                                            value={formValues.author}
                                             onChange={handleChange}
                                             required
                                         />
@@ -171,15 +162,15 @@ const EditUser = ({ setEditUser, editUser }) => {
                                             htmlFor="gender"
                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                         >
-                                            Gender
+                                            Views
                                         </label>
                                         <input
-                                            type="text"
+                                            type="number"
                                             name="gender"
                                             id="gender"
                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="Gender"
-                                            value={formValues.gender}
+                                            placeholder="Views"
+                                            value={formValues.views}
                                             onChange={handleChange}
                                             required
                                         />
@@ -189,33 +180,15 @@ const EditUser = ({ setEditUser, editUser }) => {
                                             htmlFor="budget"
                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                         >
-                                            Budget
+                                            Likes
                                         </label>
                                         <input
                                             type="number"
                                             name="budget"
                                             id="budget"
                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="Budget"
-                                            value={formValues.budget}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
-                                    <div>
-                                        <label
-                                            htmlFor="age"
-                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                        >
-                                            Age
-                                        </label>
-                                        <input
-                                            type="number"
-                                            name="age"
-                                            id="age"
-                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="Age"
-                                            value={formValues.age}
+                                            placeholder="Likes"
+                                            value={formValues.likes}
                                             onChange={handleChange}
                                             required
                                         />
@@ -236,9 +209,9 @@ const EditUser = ({ setEditUser, editUser }) => {
     );
 };
 
-EditUser.propTypes = {
-    setEditUser: PropTypes.func.isRequired,
-    editUser: PropTypes.object
+BlogsUser.propTypes = {
+    setIsOpen: PropTypes.func.isRequired,
+    isOpen: PropTypes.bool,
 };
 
-export default EditUser;
+export default BlogsUser;

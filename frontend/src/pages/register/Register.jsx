@@ -24,8 +24,8 @@ const Register = () => {
     useEffect(() => {
         if (isSuccess) {
             navigate("/login")
-            sessionStorage.setItem("username", String(formValues.username))
-            sessionStorage.setItem("password", String(formValues.password))
+            localStorage.setItem("username", String(formValues.username))
+            localStorage.setItem("password", String(formValues.password))
         }
     }, [isSuccess])
     const handleSubmit = (e) => {

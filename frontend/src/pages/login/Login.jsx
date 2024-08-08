@@ -5,8 +5,8 @@ import { useDispatch } from "react-redux";
 import { setToken, setUser } from "../../context/slices/authSlice";
 
 let initialState = {
-    username: sessionStorage.getItem("username") || '',
-    password: sessionStorage.getItem("password") || ''
+    username: localStorage.getItem("username") || 'barnes_ali-03',
+    password: localStorage.getItem("password") || '987654321'
 };
 
 const Login = () => {

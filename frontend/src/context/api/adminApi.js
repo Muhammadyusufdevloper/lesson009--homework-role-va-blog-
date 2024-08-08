@@ -4,7 +4,7 @@ export const adminApi = api.injectEndpoints({
   endpoints: (build) => ({
     signIn: build.mutation({
       query: (body) => ({
-        url: "/admins/sing-in",
+        url: "/admin/login",
         method: "POST",
         body
       }),
@@ -12,7 +12,7 @@ export const adminApi = api.injectEndpoints({
     }),
     registerUser: build.mutation({
       query: (body) => ({
-        url: "/admins/sing-up",
+        url: "/admin/register",
         method: "POST",
         body
       }),

@@ -12,6 +12,7 @@ const blogsSchema = new Schema({
     },
     userId: {
         type: Schema.Types.ObjectId,
+        ref: "User",
         required: true,
     },
     category: {
@@ -21,9 +22,6 @@ const blogsSchema = new Schema({
     author: {
         type: String,
         required: true,
-    },
-    imageUrl: {
-        type: String,
     },
     views: {
         type: Number,
@@ -41,12 +39,11 @@ export const blogValidation = (body) => {
     const schema = Joi.object({
         title: Joi.string().required(),
         description: Joi.string().required(),
-        userId: Joi.string().required(),
+        userId: Joi.string(),
         category: Joi.string().required(),
         author: Joi.string().required(),
-        imageUrl: Joi.string().uri(),
-        views: Joi.number().integer(),
-        likes: Joi.number().integer()
+        views: Joi.number().required(),
+        likes: Joi.number().required()
     });
     return schema.validate(body);
 }

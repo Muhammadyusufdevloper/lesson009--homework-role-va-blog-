@@ -20,7 +20,9 @@ const ownerSchema = new Schema({
     },
     gender: {
         type: String,
-        required: true
+        enum: ["male", "female"],
+        default: "male",
+        required: false
     },
     isActive: {
         type: Boolean,
@@ -41,7 +43,7 @@ export const ownerValidation = (body) => {
         lname: Joi.string().required(),
         username: Joi.string().required(),
         password: Joi.string().required(),
-        gender: Joi.string().required(),
+        gender: Joi.string().allow("male"),
         isActive: Joi.boolean(),
         role: Joi.string().valid("user", "admin", "owner").allow("owner")
     });

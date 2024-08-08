@@ -8,23 +8,25 @@ const router = express.Router();
 
 //----------------- Blogs routes -----------------\\
 router.get("/api/blogs", [auth], BlogsController.get);
+router.get("/api/blogs/search", [auth], BlogsController.getSearch);
 router.get("/api/blogs/:id", [auth], BlogsController.getById);
 router.post("/api/blogs", [auth], BlogsController.post);
 router.put("/api/blogs/:id", [auth], BlogsController.put);
 router.delete("/api/blogs/:id", [auth], BlogsController.delete);
 
+
 //----------------- Users routes -----------------\\
-router.get('/api/profile', [auth], UsersController.getProfile);
+router.get('/api/users/profile', [auth], UsersController.getProfile);
 router.post('/api/users/sign-up', UsersController.registerUser);
 router.post('/api/users/sign-in', UsersController.loginUser);
 
 //----------------- Admins routes -----------------\\
-router.get("/api/admin", AdminsController.getProfile);
+router.get("/api/admin/profile", [auth], AdminsController.getProfile);
 router.post("/api/admin/register", AdminsController.registerAdmin);
 router.post("/api/admin/login", AdminsController.loginAdmin);
 
 //----------------- Owners routes -----------------\\
-router.get("/api/owner", OwnersController.getProfile);
+router.get("/api/owners/profile", [auth], OwnersController.getProfile);
 router.post("/api/owner/register", OwnersController.registerOwner);
 router.post("/api/owner/login", OwnersController.loginOwner);
 

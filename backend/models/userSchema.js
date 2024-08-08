@@ -22,8 +22,9 @@ const userSchema = new mongoose.Schema(
     },
     gender: {
       type: String,
-      required: true,
-      enum: ["female", "male"],
+      enum: ["male", "female"],
+      default: "male",
+      required: false
     },
     isActive: {
       type: Boolean,
@@ -31,7 +32,7 @@ const userSchema = new mongoose.Schema(
       default: true,
     },
     role: {
-      type: String,
+      type: String, x
       required: true,
       enum: ["user", "admin", "owner"],
       default: "user",
@@ -50,7 +51,7 @@ export const validateUser = (body) => {
     lname: Joi.string().allow(""),
     username: Joi.string().required(),
     password: Joi.string().required(),
-    gender: Joi.string().valid("male", "female").required(),
+    gender: Joi.string().allow("male"),
     isActive: Joi.boolean().allow(true),
     role: Joi.string().valid("user", "admin", "owner").allow("user"),
   });

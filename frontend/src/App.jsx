@@ -4,6 +4,7 @@ import Home from "./pages/home/Home"
 import Register from "./pages/register/Register"
 import Login from "./pages/login/Login"
 import SingleRout from "./pages/single-rout/SingleRout"
+import Profile from "./pages/profile/Profile"
 
 const App = () => {
   return (
@@ -12,6 +13,7 @@ const App = () => {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="single-route/:id" element={<SingleRout />} />
+          <Route path="/profile" element={<Profile />} />
         </Route>
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
